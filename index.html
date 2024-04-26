@@ -26,7 +26,7 @@
         </div>
         <div class="form-group">
             <label for="dependents">Dependents:</label>
-            <input type="number" class="form-control" id="dependents" name="dependents">
+            <input type="number" value="1" class="form-control" id="dependents" name="dependents" required>
         </div>
         <div class="form-group">
             <label for="education">Education:</label>
@@ -35,62 +35,70 @@
                 <option value="Not Graduate">Not Graduate</option>
             </select>
         </div>
-        <div class="form-group">
-            <label for="self_employed">Self Employed:</label>
-            <select class="form-control" id="self_employed" name="self_employed">
-                <option value="Yes">Yes</option>
-                <option value="No">No</option>
-            </select>
-        </div>
-        <div class="form-group">
-            <label for="applicant_income">Applicant Income:</label>
-            <input type="number" class="form-control" id="applicant_income" name="applicant_income">
-        </div>
-        <div class="form-group">
-            <label for="coapplicant_income">Coapplicant Income:</label>
-            <input type="number" class="form-control" id="coapplicant_income" name="coapplicant_income">
-        </div>
-        <div class="form-group">
-            <label for="loan_amount">Loan Amount:</label>
-            <input type="number" class="form-control" id="loan_amount" name="loan_amount">
-        </div>
-        <div class="form-group">
-            <label for="loan_amount_term">Loan Amount Term:</label>
-            <input type="number" class="form-control" id="loan_amount_term" name="loan_amount_term">
-        </div>
-        <div class="form-group">
-            <label for="credit_history">Credit History:</label>
-            <select class="form-control" id="credit_history" name="credit_history">
-                <option value="0.0">0.0</option>
-                <option value="1.0">1.0</option>
-            </select>
-        </div>
-        <div class="form-group">
-            <label for="property_area">Property Area:</label>
-            <select class="form-control" id="property_area" name="property_area">
-                <option value="Rural">Rural</option>
-                <option value="Semiurban">Semiurban</option>
-                <option value="Urban">Urban</option>
-            </select>
-        </div>
+            <div class="form-group">
+                <label for="self_employed">Is Self Employed:</label>
+                <select class="form-control" id="self_employed" name="self_employed">
+                    <option value="Yes">Yes</option>
+                    <option value="No">No</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="applicant_monthly_income">Applicant Monthly Income:</label>
+                <input type="number" value="0" class="form-control" id="applicant_monthly_income" name="applicant_monthly_income" required>
+            </div>
+            <div class="form-group">
+                <label for="co_applicant_monthly_income">Co-Applicant Monthly Income:</label>
+                <input type="number" value="0" class="form-control" id="co_applicant_monthly_income" name="co_applicant_monthly_income" required>
+            </div>
+            <div class="form-group">
+                <label for="total_loan_amount">Total Loan Amount:</label>
+                <input type="number" value="0" class="form-control" id="total_loan_amount" name="total_loan_amount" required>
+            </div>
+            <div class="form-group">
+                <label for="loan_amount_term_in_months">Loan Amount Term (months):</label>
+                <input type="number" value="12" class="form-control" id="loan_amount_term_in_months" name="loan_amount_term_in_months" required>
+            </div>
+            <div class="form-group">
+                <label for="credit_history">Have Credit History:</label>
+                <select class="form-control" id="credit_history" name="credit_history">
+                    <option value="0.0">False</option>
+                    <option value="1.0">True</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="property_area">Property Area:</label>
+                <select class="form-control" id="property_area" name="property_area">
+                    <option value="Rural">Rural</option>
+                    <option value="Semiurban">Semi-Urban</option>
+                    <option value="Urban">Urban</option>
+                </select>
+            </div>
 
-            <button type="button" class="btn btn-primary btn-block" onclick="predictLoanApproval()">Predict</button>
+            <button type="submit" class="btn btn-primary btn-block">Predict</button>
         </form>
         <p id="prediction-result" class="text-center mt-3"></p>
     </div>
 
     <script>
+        function handleFormSubmission(event) {
+            event.preventDefault();
+            predictLoanApproval();
+        }
+
         function predictLoanApproval() {
             const formData = new FormData(document.getElementById("loan-form"));
             fetch("/predict", {
                 method: "POST",
                 body: formData
             })
-            .then(response => response.text())
-            .then(prediction => {
-                document.getElementById("prediction-result").innerText = prediction;
-            });
+                .then(response => response.text())
+                .then(prediction => {
+                    document.getElementById("prediction-result").innerText = prediction;
+                });
         }
+
+        // Add event listener to the form submission event
+        document.getElementById("loan-form").addEventListener("submit", handleFormSubmission);
     </script>
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>

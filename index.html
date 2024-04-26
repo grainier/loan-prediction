@@ -5,36 +5,62 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Loan Approval Prediction</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        .form-table {
+            display: table;
+            width: 100%;
+        }
+
+        .form-row {
+            display: table-row;
+        }
+
+        .form-group {
+            display: table-cell;
+            padding: 5px;
+            vertical-align: bottom; /* Align contents to the top of the cell */
+        }
+
+        .full-height-button {
+            height: 100%;
+            width: 100%;
+        }
+    </style>
 </head>
 <body>
-    <div class="container mt-5">
-        <h1 class="text-center mb-4">Loan Approval Prediction</h1>
-        <form id="loan-form">
-        <div class="form-group">
-            <label for="gender">Gender:</label>
-            <select class="form-control" id="gender" name="gender">
-                <option value="Male">Male</option>
-                <option value="Female">Female</option>
-            </select>
+<div class="container mt-5">
+    <h1 class="text-center mb-4">Loan Approval Prediction</h1>
+    <form id="loan-form" class="form-table">
+        <div class="form-row">
+            <div class="form-group">
+                <label for="gender">Gender:</label>
+                <select class="form-control" id="gender" name="gender">
+                    <option value="Male">Male</option>
+                    <option value="Female">Female</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="married">Married:</label>
+                <select class="form-control" id="married" name="married">
+                    <option value="Yes">Yes</option>
+                    <option value="No">No</option>
+                </select>
+            </div>
         </div>
-        <div class="form-group">
-            <label for="married">Married:</label>
-            <select class="form-control" id="married" name="married">
-                <option value="Yes">Yes</option>
-                <option value="No">No</option>
-            </select>
+        <div class="form-row">
+            <div class="form-group">
+                <label for="dependents">Dependents:</label>
+                <input type="number" value="1" class="form-control" id="dependents" name="dependents" required>
+            </div>
+            <div class="form-group">
+                <label for="education">Education:</label>
+                <select class="form-control" id="education" name="education">
+                    <option value="Graduate">Graduate</option>
+                    <option value="Not Graduate">Not Graduate</option>
+                </select>
+            </div>
         </div>
-        <div class="form-group">
-            <label for="dependents">Dependents:</label>
-            <input type="number" value="1" class="form-control" id="dependents" name="dependents" required>
-        </div>
-        <div class="form-group">
-            <label for="education">Education:</label>
-            <select class="form-control" id="education" name="education">
-                <option value="Graduate">Graduate</option>
-                <option value="Not Graduate">Not Graduate</option>
-            </select>
-        </div>
+        <div class="form-row">
             <div class="form-group">
                 <label for="self_employed">Is Self Employed:</label>
                 <select class="form-control" id="self_employed" name="self_employed">
@@ -44,19 +70,27 @@
             </div>
             <div class="form-group">
                 <label for="applicant_monthly_income">Applicant Monthly Income:</label>
-                <input type="number" value="0" class="form-control" id="applicant_monthly_income" name="applicant_monthly_income" required>
+                <input type="number" value="0" class="form-control" id="applicant_monthly_income"
+                       name="applicant_monthly_income" required>
             </div>
+        </div>
+        <div class="form-row">
             <div class="form-group">
                 <label for="co_applicant_monthly_income">Co-Applicant Monthly Income:</label>
-                <input type="number" value="0" class="form-control" id="co_applicant_monthly_income" name="co_applicant_monthly_income" required>
+                <input type="number" value="0" class="form-control" id="co_applicant_monthly_income"
+                       name="co_applicant_monthly_income" required>
             </div>
             <div class="form-group">
                 <label for="total_loan_amount">Total Loan Amount:</label>
-                <input type="number" value="0" class="form-control" id="total_loan_amount" name="total_loan_amount" required>
+                <input type="number" value="0" class="form-control" id="total_loan_amount" name="total_loan_amount"
+                       required>
             </div>
+        </div>
+        <div class="form-row">
             <div class="form-group">
                 <label for="loan_amount_term_in_months">Loan Amount Term (months):</label>
-                <input type="number" value="12" class="form-control" id="loan_amount_term_in_months" name="loan_amount_term_in_months" required>
+                <input type="number" value="12" class="form-control" id="loan_amount_term_in_months"
+                       name="loan_amount_term_in_months" required>
             </div>
             <div class="form-group">
                 <label for="credit_history">Have Credit History:</label>
@@ -65,6 +99,8 @@
                     <option value="1.0">True</option>
                 </select>
             </div>
+        </div>
+        <div class="form-row">
             <div class="form-group">
                 <label for="property_area">Property Area:</label>
                 <select class="form-control" id="property_area" name="property_area">
@@ -73,9 +109,11 @@
                     <option value="Urban">Urban</option>
                 </select>
             </div>
-
-            <button type="submit" class="btn btn-primary btn-block">Predict</button>
-        </form>
+            <div class="form-group">
+                <button type="submit" class="btn btn-primary full-height-button">Predict</button>
+            </div>
+        </div>
+    </form>
         <p id="prediction-result" class="text-center mt-3"></p>
     </div>
 
@@ -93,7 +131,14 @@
             })
                 .then(response => response.text())
                 .then(prediction => {
-                    document.getElementById("prediction-result").innerText = prediction;
+                    const predictionResult = document.getElementById("prediction-result");
+                    predictionResult.innerText = prediction;
+                    predictionResult.classList.remove("alert-success", "alert-danger");
+                    if (prediction.includes("Not")) {
+                        predictionResult.classList.add("alert", "alert-danger");
+                    } else {
+                        predictionResult.classList.add("alert", "alert-success");
+                    }
                 });
         }
 
